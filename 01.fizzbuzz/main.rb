@@ -1,10 +1,4 @@
-
-
 def fizzbuzz(n)
-  if !(n.is_a? Integer)
-    raise "#{n} is not Integer"
-  end
-
   answer = ""
   if n % 3 == 0
     answer += "Fizz"
@@ -13,9 +7,12 @@ def fizzbuzz(n)
     answer += "Buzz"
   end
 
-  return answer == "" ? n.to_s : answer
+  if answer == ""
+    n.to_s
+  else
+    answer
+  end
 end
-
 
 (1..20).each do |n|
   puts fizzbuzz(n)
