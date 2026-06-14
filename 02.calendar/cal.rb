@@ -19,7 +19,7 @@ if params[:month] || params[:year]
   target_calendar = Date.new(y, m)
 end
 
-puts format("     %d月 %4d年", target_calendar.mon, target_calendar.year)
+puts format("     %2d月 %4d年", target_calendar.mon, target_calendar.year)
 puts ["日", "月", "火", "水", "木", "金", "土"].join(" ")
 
 # 最初の日と最後の日を取得する
