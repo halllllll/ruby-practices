@@ -23,5 +23,4 @@ while frame_count < 9
   frame_count += 1
 end
 
-# p "result: #{scores_result}"
-p scores_result.sum
+puts scores_result.sum
