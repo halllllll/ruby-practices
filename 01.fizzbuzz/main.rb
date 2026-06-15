@@ -7,7 +7,7 @@ def fizzbuzz(n)
     answer += "Buzz"
   end
 
-  if answer == ""
+  if answer.empty?
     n.to_s
   else
     answer
