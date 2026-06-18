@@ -14,12 +14,12 @@ target_calendar = Date.new(Date.today.year, Date.today.month)
 
 # オプションに渡された年・月をセット
 if params[:month] || params[:year]
-  y = params[:year].nil? ? target_calendar.year : Integer(params[:year])
-  m = params[:month].nil? ? target_calendar.mon : Integer(params[:month])
+  y = params[:year].nil? ? target_calendar.year : params[:year].to_i
+  m = params[:month].nil? ? target_calendar.mon : params[:month].to_i
   target_calendar = Date.new(y, m)
 end
 
-puts format("     %2d月 %4d年", target_calendar.mon, target_calendar.year)
+puts format("%2d月 %4d年".rjust(14), target_calendar.mon, target_calendar.year)
 puts ["日", "月", "火", "水", "木", "金", "土"].join(" ")
 
 # 最初の日と最後の日を取得する
