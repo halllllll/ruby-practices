@@ -20,6 +20,7 @@ if params[:month] || params[:year]
   target_calendar = Date.new(y, m)
 end
 
+# ヘッダーの出力
 puts format("%2d月 %4d年".rjust(14), target_calendar.mon, target_calendar.year)
 puts WEEKDAY_HEADER.join(" ")
 
@@ -27,23 +28,13 @@ puts WEEKDAY_HEADER.join(" ")
 first_day = target_calendar
 last_day = first_day.next_month.prev_day
 
-# 初日からさかのぼって最初の日曜日からスタートする
-cursor_day = first_day
-while !cursor_day.sunday?
-  cursor_day = cursor_day.prev_day
-end
+# 初日からさかのぼって最初の日曜日ぶんまで空白で埋めておく
+week = first_day.sunday? ? [] : ["  "] * first_day.wday
 
-week = []
-while cursor_day <= last_day
-  if cursor_day < first_day
-    week << "  "
-  else
-    week << format("%2d", cursor_day.day)
-  end
-
-  if cursor_day.saturday? || cursor_day == last_day
+(first_day..last_day).each do |date|
+  week << format("%2d", date.day)
+  if date.saturday? || date == last_day
     puts week.join(" ")
     week = []
   end
-  cursor_day = cursor_day.next
 end
