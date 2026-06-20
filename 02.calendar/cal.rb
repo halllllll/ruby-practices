@@ -11,6 +11,7 @@ opt.on("-m [VAL]"){|v| params[:month] = v}
 opt.parse!(ARGV)
 
 target_calendar = Date.new(Date.today.year, Date.today.month)
+
 WEEKDAY_HEADER = ['日', '月', '火', '水', '木', '金', '土']
 
 # オプションに渡された年・月をセット
@@ -21,7 +22,7 @@ if params[:month] || params[:year]
 end
 
 # ヘッダーの出力
-puts format("%2d月 %4d年".rjust(14), target_calendar.mon, target_calendar.year)
+puts format("%2d月 %4d".rjust(13), target_calendar.mon, target_calendar.year)
 puts WEEKDAY_HEADER.join(" ")
 
 # 最初の日と最後の日を取得する
