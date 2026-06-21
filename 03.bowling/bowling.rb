@@ -4,20 +4,19 @@
 score = ARGV[0]
 scores = score.split(',').map { |n| n == 'X' ? 10 : n.to_i }
 
-# 合計点がわかればいいので、フレームごとに区切らず、自点を加算する方針
-scores_result = scores.sum
+# 合計点がわかればいいので、配点を加算する方針
+scores_result = 0
 bowl_count = 0
 
-9.times do
+10.times do
   if scores[bowl_count] == 10 # strike
-    # 2投先まで加点
-    scores_result += scores[bowl_count + 1, 2].sum
+    scores_result += scores[bowl_count, 3].sum
     bowl_count += 1
-  elsif scores[bowl_count] + scores[bowl_count + 1] == 10 # spare
-    # 1投先までがスペアのセット。2投先が加点対象の投球
-    scores_result += scores[bowl_count + 2]
+  elsif scores[bowl_count, 2].sum == 10 # spare
+    scores_result += scores[bowl_count, 3].sum
     bowl_count += 2
   else
+    scores_result += scores[bowl_count, 2].sum
     bowl_count += 2
   end
 end
