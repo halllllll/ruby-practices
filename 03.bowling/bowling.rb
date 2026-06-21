@@ -11,10 +11,11 @@ bowl_count = 0
 
 while frame_count < 9
   if scores[bowl_count] == 10 # strike
-    scores_result += scores[bowl_count + 1]
-    scores_result += scores[bowl_count + 2]
+    # 2投先まで加点
+    scores_result += scores[bowl_count + 1, 2].sum
     bowl_count += 1
   elsif scores[bowl_count] + scores[bowl_count + 1] == 10 # spare
+    # 1投先までがスペアのセット。2投先が加点対象の投球
     scores_result += scores[bowl_count + 2]
     bowl_count += 2
   else
