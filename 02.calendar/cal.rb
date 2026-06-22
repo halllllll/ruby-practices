@@ -22,7 +22,7 @@ if params[:month] || params[:year]
 end
 
 # ヘッダーの出力
-puts format("%2d月 %4d".rjust(13), target_calendar.mon, target_calendar.year)
+puts "#{target_calendar.mon}月 #{target_calendar.year}".rjust(13)
 puts WEEKDAY_HEADER.join(" ")
 
 # 最初の日と最後の日を取得する
@@ -33,7 +33,7 @@ last_day = first_day.next_month.prev_day
 week = first_day.sunday? ? [] : ["  "] * first_day.wday
 
 (first_day..last_day).each do |date|
-  week << format("%2d", date.day)
+  week << date.strftime('%e')
   if date.saturday? || date == last_day
     puts week.join(" ")
     week = []
