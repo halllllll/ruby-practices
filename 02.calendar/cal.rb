@@ -21,7 +21,7 @@ if params[:month] || params[:year]
 end
 
 # ヘッダーの出力
-puts "#{target_calendar.mon}月 #{target_calendar.year}".rjust(13)
+puts "#{target_calendar.mon}月 #{target_calendar.year}".rjust(14)
 puts WEEKDAY_HEADER.join(" ")
 
 # 最初の日と最後の日を取得する
