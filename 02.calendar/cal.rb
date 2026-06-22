@@ -14,7 +14,6 @@ target_calendar = Date.new(Date.today.year, Date.today.month)
 
 WEEKDAY_HEADER = ['日', '月', '火', '水', '木', '金', '土']
 
-# オプションに渡された年・月をセット
 if params[:month] || params[:year]
   y = params[:year].nil? ? target_calendar.year : params[:year].to_i
   m = params[:month].nil? ? target_calendar.mon : params[:month].to_i
