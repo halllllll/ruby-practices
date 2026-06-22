@@ -29,7 +29,7 @@ first_day = target_calendar
 last_day = first_day.next_month.prev_day
 
 # 初日からさかのぼって最初の日曜日ぶんまで空白で埋めておく
-week = first_day.sunday? ? [] : ["  "] * first_day.wday
+week = ["  "] * first_day.wday
 
 (first_day..last_day).each do |date|
   week << date.strftime('%e')
