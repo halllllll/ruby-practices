@@ -3,6 +3,8 @@
 require "date"
 require "optparse"
 
+WEEKDAY_HEADER = ['日', '月', '火', '水', '木', '金', '土']
+
 opt = OptionParser.new
 params = {}
 opt.on("-y [VAL]"){|v| params[:year] = v}
@@ -11,8 +13,6 @@ opt.on("-m [VAL]"){|v| params[:month] = v}
 opt.parse!(ARGV)
 
 target_calendar = Date.new(Date.today.year, Date.today.month)
-
-WEEKDAY_HEADER = ['日', '月', '火', '水', '木', '金', '土']
 
 if params[:month] || params[:year]
   y = params[:year].nil? ? target_calendar.year : params[:year].to_i
