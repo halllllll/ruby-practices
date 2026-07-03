@@ -22,7 +22,7 @@ files_table = create_smoose_table(arr: files, slice_number: COL)
 
 display_table = files_table.transpose
 
-# 各列でファイル名の最長の長さに合わせて各行の文字列をブランクでpaddingする
+# 各列のファイル名の最長の長さに合わせて各行の文字列をブランクでpaddingする
 column_width = files_table.map { it.map(&:length).max }
 
 display_table.each do |row|
