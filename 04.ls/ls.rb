@@ -21,5 +21,5 @@ display_table = files_table.transpose
 column_width = files_table.map { it.map(&:length).max }
 
 display_table.each do |row|
-  puts row.map.with_index { |r, idx| r.ljust(column_width[idx]) }.join('\t')
+  puts row.map.with_index { |r, idx| r.ljust(column_width[idx]) }.join("\t")
 end
