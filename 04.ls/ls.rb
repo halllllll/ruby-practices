@@ -3,7 +3,7 @@
 
 require 'pathname'
 
-COL = 3
+COLUMN_SIZE = 3
 
 def get_files(dir: Dir.pwd, show_dotfile: true)
   files = Pathname.new(dir).each_entry.map(&:to_path).sort
@@ -18,7 +18,7 @@ end
 
 files = get_files(show_dotfile: false)
 
-files_table = create_smoose_table(arr: files, slice_number: COL)
+files_table = create_smoose_table(arr: files, slice_number: COLUMN_SIZE)
 
 display_table = files_table.transpose
 
