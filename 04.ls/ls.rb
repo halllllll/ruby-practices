@@ -5,9 +5,14 @@ require 'pathname'
 
 COLUMN_SIZE = 3
 
-def get_files(dir: Dir.pwd, show_dotfile: true)
-  files = Pathname.new(dir).each_entry.map(&:to_path).sort
-  show_dotfile ? files : files.filter { it.match(/^(?!\..*)/) }
+def get_files(dir: '*', show_dotfile: false)
+  files = if show_dotfile
+            Pathname.glob(dir, flags: File::FNM_DOTMATCH)
+          else
+            Pathname.glob(dir)
+          end
+
+  files.each_entry.map(&:to_path).sort
 end
 
 def create_smoose_table(arr:, slice_number:, filler: '')
@@ -16,7 +21,7 @@ def create_smoose_table(arr:, slice_number:, filler: '')
   arr.each_slice(fixed_slice_length).map { it.fill(filler, it.size...fixed_slice_length) }
 end
 
-files = get_files(show_dotfile: false)
+files = get_files
 
 files_table = create_smoose_table(arr: files, slice_number: COLUMN_SIZE)
 
