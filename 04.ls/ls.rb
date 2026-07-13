@@ -16,8 +16,7 @@ def get_files(dir: '*', show_dotfile: false)
 end
 
 def create_smoose_table(arr:, slice_number:, filler: '')
-  q, r = arr.size.divmod(slice_number)
-  fixed_slice_length = q + (r.zero? ? 0 : 1)
+  fixed_slice_length = arr.size.ceildiv(slice_number)
   arr.each_slice(fixed_slice_length).map { it.fill(filler, it.size...fixed_slice_length) }
 end
 
