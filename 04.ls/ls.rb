@@ -5,11 +5,12 @@ require 'pathname'
 
 COLUMN_SIZE = 3
 
-def get_files(dir: '*', show_dotfile: false)
+def get_files(directory: '.', show_dotfile: false)
+  dir = Pathname.new(directory)
   files = if show_dotfile
-            Pathname.glob(dir, flags: File::FNM_DOTMATCH)
+            dir.glob('*', flags: File::FNM_DOTMATCH)
           else
-            Pathname.glob(dir)
+            dir.glob('*')
           end
 
   files.each_entry.map(&:to_path).sort
