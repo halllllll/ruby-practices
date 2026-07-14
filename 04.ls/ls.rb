@@ -16,14 +16,18 @@ def get_files(directory: '.', show_dotfile: false)
   files.each_entry.map(&:to_path).sort
 end
 
-def create_smoose_table(arr:, slice_number:, filler: '')
-  fixed_slice_length = arr.size.ceildiv(slice_number)
-  arr.each_slice(fixed_slice_length).map { it.fill(filler, it.size...fixed_slice_length) }
+def to_filename_matrix(files:, slice_number:, filler: '')
+  fixed_slice_length = files.size.ceildiv(slice_number)
+  if fixed_slice_length <= 0
+    [[]]
+  else
+    files.each_slice(fixed_slice_length).map { it.fill(filler, it.size...fixed_slice_length) }
+  end
 end
 
 files = get_files
 
-files_table = create_smoose_table(arr: files, slice_number: COLUMN_SIZE)
+files_table = to_filename_matrix(files: files, slice_number: COLUMN_SIZE)
 
 display_table = files_table.transpose
 
