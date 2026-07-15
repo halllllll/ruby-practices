@@ -7,13 +7,8 @@ COLUMN_SIZE = 3
 
 def get_files(directory: '.', show_dotfile: false)
   dir = Pathname.new(directory)
-  files = if show_dotfile
-            dir.glob('*', flags: File::FNM_DOTMATCH)
-          else
-            dir.glob('*')
-          end
-
-  files.each_entry.map(&:to_path).sort
+  flags = show_dotfile ? File::FNM_DOTMATCH : 0
+  dir.glob('*', flags).each_entry.map(&:to_path).sort
 end
 
 def to_filename_matrix(files:, slice_number:, filler: '')
