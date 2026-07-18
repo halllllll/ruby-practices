@@ -1,9 +1,16 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require 'optparse'
 require 'pathname'
 
 COLUMN_SIZE = 3
+
+params = { all: false }
+
+opt = OptionParser.new
+opt.on('-a') { params[:all] = true }
+opt.parse!(ARGV)
 
 def get_files(directory: '.', show_dotfile: false)
   dir = Pathname.new(directory)
@@ -20,7 +27,7 @@ def to_filename_matrix(files:, slice_number:, filler: '')
   end
 end
 
-files = get_files
+files = get_files(show_dotfile: params[:all])
 
 files_table = to_filename_matrix(files: files, slice_number: COLUMN_SIZE)
 
