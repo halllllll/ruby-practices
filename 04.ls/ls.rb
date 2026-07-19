@@ -14,10 +14,10 @@ def parse_options(argv = ARGV)
   params
 end
 
-def get_files(directory: '.', show_dotfile: false)
+def files_in(directory: '.', show_dotfile: false)
   dir = Pathname.new(directory)
   flags = show_dotfile ? File::FNM_DOTMATCH : 0
-  dir.glob('*', flags).each_entry.map(&:to_path).sort
+  dir.glob('*', flags).map(&:to_path).sort
 end
 
 def to_filename_matrix(files:, slice_number:, filler: '')
@@ -31,7 +31,7 @@ end
 
 options = parse_options
 
-files = get_files(show_dotfile: options[:all])
+files = files_in(show_dotfile: options[:all])
 
 files_table = to_filename_matrix(files: files, slice_number: COLUMN_SIZE)
 
