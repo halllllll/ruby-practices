@@ -21,12 +21,7 @@ end
 def files_in(directory: '.', show_dotfile: false)
   dir = Pathname.new(directory)
   flags = show_dotfile ? File::FNM_DOTMATCH : 0
-  dir.glob('*', flags).map(&:to_path)
-end
-
-def apply_order(files:, descending: false)
-  sorted_files = files.sort
-  descending ? sorted_files.reverse : sorted_files
+  dir.glob('*', flags).map(&:to_path).sort
 end
 
 def to_filename_matrix(files:, slice_number:, filler: '')
@@ -41,7 +36,7 @@ end
 options = parse_options
 
 file_list = files_in(show_dotfile: options[:all])
-ordered_files = apply_order(files: file_list, descending: options[:reverse])
+ordered_files = options[:reverse] ? file_list.reverse : file_list
 
 files_table = to_filename_matrix(files: ordered_files, slice_number: COLUMN_SIZE)
 
