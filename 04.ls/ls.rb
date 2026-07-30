@@ -7,9 +7,13 @@ require 'pathname'
 COLUMN_SIZE = 3
 
 def parse_options(argv = ARGV)
-  params = { all: false }
+  params = {
+    all: false,
+    reverse: false
+  }
   OptionParser.new do |opt|
     opt.on('-a') { params[:all] = true }
+    opt.on('-r') { params[:reverse] = true }
   end.parse!(argv)
   params
 end
@@ -31,9 +35,10 @@ end
 
 options = parse_options
 
-files = files_in(show_dotfile: options[:all])
+file_list = files_in(show_dotfile: options[:all])
+ordered_files = options[:reverse] ? file_list.reverse : file_list
 
-files_table = to_filename_matrix(files: files, slice_number: COLUMN_SIZE)
+files_table = to_filename_matrix(files: ordered_files, slice_number: COLUMN_SIZE)
 
 display_table = files_table.transpose
 
