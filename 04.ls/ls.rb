@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require 'date'
+require 'debug'
 require 'etc'
 require 'optparse'
 require 'pathname'
@@ -38,18 +39,18 @@ def to_filename_matrix(files:, slice_number:, filler: '')
 end
 
 def format_permission(stat)
-  filetype_map = {
-    0o010000 => 'p',
-    0o020000 => 'c',
-    0o040000 => 'd',
-    0o060000 => 'b',
-    0o100000 => '-',
-    0o120000 => 'l',
-    0o140000 => 's'
-  }
   file_mode = stat.mode
+  file_type = case stat.ftype
+    when 'fifo'; 'p'
+    when 'characterSpecial'; 'c'
+    when 'directory'; 'd'
+    when 'blockSpecial'; 'b'
+    when 'file'; '-'
+    when 'link'; 'l'
+    when 'socket'; 's'
+    else '?'
+  end
 
-  filetype = filetype_map[file_mode & 0o170000]
   permissions = file_mode & 0o777
 
   # 3bitずつ取り出す
@@ -68,7 +69,7 @@ def format_permission(stat)
     permissions_str[8] = permissions_str[8] == "x" ? "t" : "T"
   end
 
-  filetype + permissions_str
+  file_type + permissions_str
 end
 
 options = parse_options
