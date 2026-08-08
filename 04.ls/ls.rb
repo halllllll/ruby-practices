@@ -61,15 +61,6 @@ def format_permission(stat)
     bits = (permissions >> 6 - (i * 3))
     permissions_str += ((bits & 4).positive? ? 'r' : '-') + ((bits & 2).positive? ? 'w' : '-') + ((bits & 1).positive? ? 'x' : '-')
   end
-
-  if stat.setuid?
-    permissions_str[2] = permissions_str[2] == 'x' ? 's' : 'S'
-  elsif stat.setgid?
-    permissions_str[5] = permissions_str[5] == 'x' ? 's' : 'S'
-  elsif stat.sticky?
-    permissions_str[8] = permissions_str[8] == 'x' ? 't' : 'T'
-  end
-
   permissions_str
 end
 
@@ -84,7 +75,16 @@ if options[:long]
   six_months_ago = Date.today << 6
   ordered_files.each do |file|
     stat = File.stat(file)
-    file_permission = convert_filetype(stat) + format_permission(stat)
+    permission = format_permission(stat)
+    if stat.setuid?
+      permission[2] = permission[2] == 'x' ? 's' : 'S'
+    elsif stat.setgid?
+      permission[5] = permission[5] == 'x' ? 's' : 'S'
+    elsif stat.sticky?
+      permission[8] = permission[8] == 'x' ? 't' : 'T'
+    end
+
+    file_permission = convert_filetype(stat) + permission
     last_update = stat.mtime.strftime('%b %e ')
     # 6ヶ月以上前の場合は時刻の代わりに西暦をつける
     last_update_time = last_update + ((stat.mtime.to_date < six_months_ago ? stat.mtime.year.to_s.rjust(5) : stat.mtime.strftime('%H:%M')))
