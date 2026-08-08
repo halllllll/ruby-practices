@@ -81,13 +81,14 @@ ordered_files = options[:reverse] ? file_list.reverse : file_list
 if options[:long]
   result = []
   total_blocksize = 0
-  ordered_files.each do |f|
-    stat = File.stat(f)
+  six_months_ago = Date.today << 6
+  ordered_files.each do |file|
+    stat = File.stat(file)
     file_permission = convert_filetype(stat) + format_permission(stat)
     last_update = stat.mtime.strftime('%b %e ')
     # 6ヶ月以上前の場合は時刻の代わりに西暦をつける
-    last_update_time = last_update + ((stat.mtime.to_date < (Date.today << 6) ? stat.mtime.year.to_s.rjust(5) : stat.mtime.strftime('%H:%M')))
-    result.push([file_permission, stat.nlink, Etc.getpwuid(stat.uid).name, Etc.getgrgid(stat.gid).name, stat.size, last_update_time, f])
+    last_update_time = last_update + ((stat.mtime.to_date < six_months_ago ? stat.mtime.year.to_s.rjust(5) : stat.mtime.strftime('%H:%M')))
+    result.push([file_permission, stat.nlink, Etc.getpwuid(stat.uid).name, Etc.getgrgid(stat.gid).name, stat.size, last_update_time, file])
     total_blocksize += stat.blocks
   end
 
