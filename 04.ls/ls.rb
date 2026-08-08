@@ -38,38 +38,41 @@ def to_filename_matrix(files:, slice_number:, filler: '')
   end
 end
 
+def convert_filetype(stat)
+  case stat.ftype
+  when 'fifo' then 'p'
+  when 'characterSpecial' then 'c'
+  when 'directory' then 'd'
+  when 'blockSpecial' then 'b'
+  when 'file' then '-'
+  when 'link' then 'l'
+  when 'socket' then 's'
+  else '?'
+  end
+end
+
+
 def format_permission(stat)
   file_mode = stat.mode
-  file_type = case stat.ftype
-    when 'fifo'; 'p'
-    when 'characterSpecial'; 'c'
-    when 'directory'; 'd'
-    when 'blockSpecial'; 'b'
-    when 'file'; '-'
-    when 'link'; 'l'
-    when 'socket'; 's'
-    else '?'
-  end
 
   permissions = file_mode & 0o777
 
   # 3bitずつ取り出す
-  permissions_str = ""
+  permissions_str = ''
   3.times do |i|
     bits = (permissions >> 6 - (i * 3))
-    permissions_str += (bits & 4 > 0 ? 'r' : '-') + (bits & 2 > 0 ? 'w' : '-') + (bits & 1 > 0 ? 'x' : '-')
+    permissions_str += ((bits & 4).positive? ? 'r' : '-') + ((bits & 2).positive? ? 'w' : '-') + ((bits & 1).positive? ? 'x' : '-')
   end
 
-  case
-  when stat.setuid?
-    permissions_str[2] = permissions_str[2] == "x" ? "s" : "S"
-  when stat.setgid?
-    permissions_str[5] = permissions_str[5] == "x" ? "s" : "S"
-  when stat.sticky?
-    permissions_str[8] = permissions_str[8] == "x" ? "t" : "T"
+  if stat.setuid?
+    permissions_str[2] = permissions_str[2] == 'x' ? 's' : 'S'
+  elsif stat.setgid?
+    permissions_str[5] = permissions_str[5] == 'x' ? 's' : 'S'
+  elsif stat.sticky?
+    permissions_str[8] = permissions_str[8] == 'x' ? 't' : 'T'
   end
 
-  file_type + permissions_str
+  permissions_str
 end
 
 options = parse_options
@@ -77,16 +80,15 @@ options = parse_options
 file_list = files_in(show_dotfile: options[:all])
 ordered_files = options[:reverse] ? file_list.reverse : file_list
 
-
 if options[:long]
   result = []
   total_blocksize = 0
   ordered_files.each do |f|
     stat = File.stat(f)
-    file_permission = format_permission(stat)
-    last_update = stat.mtime.strftime("%b %e ")
+    file_permission = convert_filetype(stat) + format_permission(stat)
+    last_update = stat.mtime.strftime('%b %e ')
     # 6ヶ月以上前の場合は時刻の代わりに年をつける
-    last_update_time = last_update + ((stat.mtime.to_date < (Date.today << 6) ? stat.mtime.year.to_s.rjust(5) : stat.mtime.strftime("%H:%M")))
+    last_update_time = last_update + ((stat.mtime.to_date < (Date.today << 6) ? stat.mtime.year.to_s.rjust(5) : stat.mtime.strftime('%H:%M')))
     result.push([file_permission, stat.nlink, Etc.getpwuid(stat.uid).name, Etc.getgrgid(stat.gid).name, stat.size, last_update_time, f])
     total_blocksize += stat.blocks
   end
@@ -99,7 +101,14 @@ if options[:long]
 
   puts "total #{total_blocksize}"
   result.map do |row|
-    puts [row[0], row[1].to_s.rjust(longest_link_count), row[2].ljust(longest_ownername_size), row[3].ljust(longest_groupname_size), row[4].to_s.rjust(biggest_filesize), row[5..6]].join(" ")
+    puts [
+      row[0],
+      row[1].to_s.rjust(longest_link_count),
+      row[2].ljust(longest_ownername_size),
+      row[3].ljust(longest_groupname_size),
+      row[4].to_s.rjust(biggest_filesize),
+      row[5..6]
+    ].join(' ')
   end
 
 else
