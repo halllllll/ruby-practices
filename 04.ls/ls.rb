@@ -51,10 +51,8 @@ def convert_filetype(stat)
   end
 end
 
-
 def format_permission(stat)
   file_mode = stat.mode
-
   permissions = file_mode & 0o777
 
   # 3bitずつ取り出す
@@ -87,7 +85,7 @@ if options[:long]
     stat = File.stat(f)
     file_permission = convert_filetype(stat) + format_permission(stat)
     last_update = stat.mtime.strftime('%b %e ')
-    # 6ヶ月以上前の場合は時刻の代わりに年をつける
+    # 6ヶ月以上前の場合は時刻の代わりに西暦をつける
     last_update_time = last_update + ((stat.mtime.to_date < (Date.today << 6) ? stat.mtime.year.to_s.rjust(5) : stat.mtime.strftime('%H:%M')))
     result.push([file_permission, stat.nlink, Etc.getpwuid(stat.uid).name, Etc.getgrgid(stat.gid).name, stat.size, last_update_time, f])
     total_blocksize += stat.blocks
