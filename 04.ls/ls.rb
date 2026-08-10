@@ -93,26 +93,34 @@ if options[:long]
 
     file_permission = convert_filetype(stat) + permission
     last_update = format_lastupdate(stat)
-    result.push([file_permission, stat.nlink, Etc.getpwuid(stat.uid).name, Etc.getgrgid(stat.gid).name, stat.size, last_update, file])
-
+    file_data = {
+      permission: file_permission,
+      link_count: stat.nlink,
+      owner_name: Etc.getpwuid(stat.uid).name,
+      group_name: Etc.getgrgid(stat.gid).name,
+      size: stat.size,
+      last_update: last_update,
+      name: file
+    }
+    result.push(file_data)
     total_blocksize += stat.blocks
   end
 
-  transposed_result = result.transpose
-  longest_link_count = transposed_result[1].max.to_s.size
-  longest_ownername_size = transposed_result[2].max.size
-  longest_groupname_size = transposed_result[3].max.size
-  biggest_filesize = transposed_result[4].max.to_s.size
+  longest_link_count = result.map { |f| f[:link_count] }.max.to_s.size
+  longest_ownername_size = result.map { |f| f[:owner_name] }.max.size
+  longest_groupname_size = result.map { |f| f[:group_name] }.max.size
+  biggest_filesize = result.map { |f| f[:size] }.max.to_s.size
 
   puts "total #{total_blocksize}"
-  result.each do |row|
+  result.each do |file_data|
     puts [
-      row[0],
-      row[1].to_s.rjust(longest_link_count),
-      row[2].ljust(longest_ownername_size),
-      row[3].ljust(longest_groupname_size),
-      row[4].to_s.rjust(biggest_filesize),
-      row[5..6]
+      file_data[:permission],
+      file_data[:link_count].to_s.rjust(longest_link_count),
+      file_data[:owner_name].ljust(longest_ownername_size),
+      file_data[:group_name].ljust(longest_groupname_size),
+      file_data[:size].to_s.rjust(biggest_filesize),
+      file_data[:last_update],
+      file_data[:name]
     ].join(' ')
   end
 
