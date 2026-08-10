@@ -38,16 +38,17 @@ def to_filename_matrix(files:, slice_number:, filler: '')
 end
 
 def convert_filetype(stat)
-  case stat.ftype
-  when 'fifo' then 'p'
-  when 'characterSpecial' then 'c'
-  when 'directory' then 'd'
-  when 'blockSpecial' then 'b'
-  when 'file' then '-'
-  when 'link' then 'l'
-  when 'socket' then 's'
-  else '?'
-  end
+  ftype_table = {
+    'fifo' => 'p',
+    'characterSpecial' => 'c',
+    'directory' => 'd',
+    'blockSpecial' => 'b',
+    'file' => '-',
+    'link' => 'l',
+    'socket' => 's'
+  }
+
+  ftype_table[stat.ftype] || '?'
 end
 
 def format_permission(stat)
