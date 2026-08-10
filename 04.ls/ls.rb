@@ -64,6 +64,13 @@ def format_permission(stat)
   permissions_str
 end
 
+def format_lastupdate(stat)
+  last_update = stat.mtime.strftime('%b %e ')
+  # 6ヶ月以上前の場合は時刻の代わりに西暦をつける
+  six_months_ago = Date.today << 6
+  last_update + ((stat.mtime.to_date < six_months_ago ? stat.mtime.year.to_s.rjust(5) : stat.mtime.strftime('%H:%M')))
+end
+
 options = parse_options
 
 file_list = files_in(show_dotfile: options[:all])
@@ -72,7 +79,7 @@ ordered_files = options[:reverse] ? file_list.reverse : file_list
 if options[:long]
   result = []
   total_blocksize = 0
-  six_months_ago = Date.today << 6
+
   ordered_files.each do |file|
     stat = File.stat(file)
     permission = format_permission(stat)
@@ -85,10 +92,9 @@ if options[:long]
     end
 
     file_permission = convert_filetype(stat) + permission
-    last_update = stat.mtime.strftime('%b %e ')
-    # 6ヶ月以上前の場合は時刻の代わりに西暦をつける
-    last_update_time = last_update + ((stat.mtime.to_date < six_months_ago ? stat.mtime.year.to_s.rjust(5) : stat.mtime.strftime('%H:%M')))
-    result.push([file_permission, stat.nlink, Etc.getpwuid(stat.uid).name, Etc.getgrgid(stat.gid).name, stat.size, last_update_time, file])
+    last_update = format_lastupdate(stat)
+    result.push([file_permission, stat.nlink, Etc.getpwuid(stat.uid).name, Etc.getgrgid(stat.gid).name, stat.size, last_update, file])
+
     total_blocksize += stat.blocks
   end
 
@@ -99,7 +105,7 @@ if options[:long]
   biggest_filesize = transposed_result[4].max.to_s.size
 
   puts "total #{total_blocksize}"
-  result.map do |row|
+  result.each do |row|
     puts [
       row[0],
       row[1].to_s.rjust(longest_link_count),
