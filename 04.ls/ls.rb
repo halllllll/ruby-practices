@@ -8,6 +8,16 @@ require 'pathname'
 
 COLUMN_SIZE = 3
 
+FTYPE_TABLE = {
+  'fifo' => 'p',
+  'characterSpecial' => 'c',
+  'directory' => 'd',
+  'blockSpecial' => 'b',
+  'file' => '-',
+  'link' => 'l',
+  'socket' => 's'
+}.freeze
+
 def parse_options(argv = ARGV)
   params = {
     all: false,
@@ -35,20 +45,6 @@ def to_filename_matrix(files:, slice_number:, filler: '')
   else
     files.each_slice(fixed_slice_length).map { it.fill(filler, it.size...fixed_slice_length) }
   end
-end
-
-def convert_filetype(stat)
-  ftype_table = {
-    'fifo' => 'p',
-    'characterSpecial' => 'c',
-    'directory' => 'd',
-    'blockSpecial' => 'b',
-    'file' => '-',
-    'link' => 'l',
-    'socket' => 's'
-  }
-
-  ftype_table[stat.ftype] || '?'
 end
 
 def format_permission(stat)
@@ -93,7 +89,7 @@ if options[:long]
       permission[8] = permission[8] == 'x' ? 't' : 'T'
     end
 
-    file_permission = convert_filetype(stat) + permission
+    file_permission = (FTYPE_TABLE[stat.ftype] || '?') + permission
     last_update = format_lastupdate(stat)
     file_data = {
       permission: file_permission,
