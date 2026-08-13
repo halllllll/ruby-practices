@@ -55,9 +55,11 @@ def format_permission(stat)
   permissions_str = ''
   3.times do |i|
     bits = (permissions >> 6 - (i * 3))
-    permissions_str += [{ bit: 4, permission: 'r' }, { bit: 2, permission: 'w' }, { bit: 1, permission: 'x' }].map do |mode|
-      (bits & mode[:bit]).positive? ? mode[:permission] : '-'
-    end.join
+    permissions_str += [
+      { bit: 4, permission: 'r' },
+      { bit: 2, permission: 'w' },
+      { bit: 1, permission: 'x' }
+    ].map { |mode| (bits & mode[:bit]).positive? ? mode[:permission] : '-' }.join
   end
   permissions_str
 end
