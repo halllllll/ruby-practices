@@ -106,12 +106,14 @@ if options[:long]
     total_blocksize += stat.blocks
   end
 
+  puts "total #{total_blocksize}"
+  return if result.empty?
+
   longest_link_count = result.map { |f| f[:link_count] }.max.to_s.size
   longest_ownername_size = result.map { |f| f[:owner_name] }.max.size
   longest_groupname_size = result.map { |f| f[:group_name] }.max.size
   biggest_filesize = result.map { |f| f[:size] }.max.to_s.size
 
-  puts "total #{total_blocksize}"
   result.each do |file_data|
     puts [
       file_data[:permission],
