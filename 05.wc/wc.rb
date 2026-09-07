@@ -65,5 +65,5 @@ else
       puts "wc: #{file_path}: open: No such file or directory"
     end
   end
-  puts total.format_row(options[:params]) if options[:files].size.positive?
+  puts total.format_row(options[:params]) if options[:files].size > 1
 end
